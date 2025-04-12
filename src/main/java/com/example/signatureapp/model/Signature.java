@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Entity
 @Table(name = "signatures")
 @Data
@@ -15,12 +18,12 @@ import lombok.NoArgsConstructor;
 public class Signature {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private UUID id;
 
-    // Название детектируемого объекта
-    @Column(name = "object_name", nullable = false)
-    private String objectName;
+    // Название угрозы
+    @Column(name = "threat_name", nullable = false)
+    private String threatName;
     
     // Первые 8 байт сигнатуры (хранится как строка)
     @Column(name = "first_8_bytes", nullable = false)
@@ -34,18 +37,34 @@ public class Signature {
     @Column(name = "remainder_length", nullable = false)
     private Integer remainderLength;
     
-    // Смещение начала сигнатуры в файле
-    @Column(name = "start_offset", nullable = false)
-    private Long startOffset;
-    
-    // Смещение конца сигнатуры в файле
-    @Column(name = "end_offset", nullable = false)
-    private Long endOffset;
-    
-    // ManyToOne relationship with FileType
+    // Тип файла, для которого актуальна сигнатура
     @ManyToOne
     @JoinColumn(name = "file_type_id", nullable = false)
     private FileType fileType;
+    
+    // Смещение начала сигнатуры в файле
+    @Column(name = "offset_start", nullable = false)
+    private Integer startOffset;
+    
+    // Смещение конца сигнатуры в файле
+    @Column(name = "offset_end", nullable = false)
+    private Integer endOffset;
+    
+    // Электронная цифровая подпись
+    @Column(name = "digital_signature", nullable = false, columnDefinition = "TEXT")
+    private String digitalSignature;
+    
+    // Дата создания записи
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+    
+    // Дата последнего обновления записи
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+    
+    // Статус записи (ACTUAL, DELETED, CORRUPTED)
+    @Column(name = "status", nullable = false)
+    private String status;
     
     // OneToOne relationship with ScanReport
     @OneToOne(mappedBy = "detectedSignature")

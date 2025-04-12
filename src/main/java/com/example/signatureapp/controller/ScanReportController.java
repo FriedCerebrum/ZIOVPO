@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.List;
 
 @RestController
@@ -30,7 +31,7 @@ public class ScanReportController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ScanReportDto> getScanReportById(@PathVariable Long id) {
+    public ResponseEntity<ScanReportDto> getScanReportById(@PathVariable UUID id) {
         ScanReportDto scanReportDto = scanReportService.getScanReportById(id);
         return ResponseEntity.ok(scanReportDto);
     }
@@ -69,14 +70,14 @@ public class ScanReportController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ScanReportDto> updateScanReport(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @Valid @RequestBody ScanReportDto scanReportDto) {
         ScanReportDto updatedScanReport = scanReportService.updateScanReport(id, scanReportDto);
         return ResponseEntity.ok(updatedScanReport);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteScanReport(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteScanReport(@PathVariable UUID id) {
         scanReportService.deleteScanReport(id);
         return ResponseEntity.noContent().build();
     }

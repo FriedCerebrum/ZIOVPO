@@ -1,9 +1,13 @@
+C:\ZIOVPO\src\main\java\com\example\signatureapp\repository\SignatureHistoryRepository.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\ScanReportService.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\service\impl\DigitalSignatureServiceImpl.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\dto\FileTypeDto.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\controller\ScanEngineController.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\repository\ScanEngineRepository.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\scheduler\SignatureVerificationScheduler.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\SignatureAppApplication.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\impl\SignatureServiceImpl.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\config\SecurityConfig.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\FileTypeService.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\impl\FileTypeServiceImpl.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\SignatureService.java
@@ -18,8 +22,13 @@ C:\ZIOVPO\src\main\java\com\example\signatureapp\repository\FileTypeRepository.j
 C:\ZIOVPO\src\main\java\com\example\signatureapp\repository\ScanReportRepository.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\controller\FileTypeController.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\impl\ScanEngineServiceImpl.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\repository\SignatureAuditRepository.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\ScanEngineService.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\controller\SignatureController.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\model\ScanEngine.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\service\DigitalSignatureService.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\model\SignatureAudit.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\security\UserRoleAuthenticationFilter.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\dto\ScanReportDto.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\model\SignatureHistory.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\repository\SignatureRepository.java

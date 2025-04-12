@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,7 +51,7 @@ public class ScanReportServiceImpl implements ScanReportService {
     }
 
     @Override
-    public ScanReportDto getScanReportById(Long id) {
+    public ScanReportDto getScanReportById(UUID id) {
         ScanReport scanReport = scanReportRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Scan report not found with id: " + id));
         return mapToDto(scanReport);
@@ -95,7 +96,7 @@ public class ScanReportServiceImpl implements ScanReportService {
     }
 
     @Override
-    public ScanReportDto updateScanReport(Long id, ScanReportDto scanReportDto) {
+    public ScanReportDto updateScanReport(UUID id, ScanReportDto scanReportDto) {
         ScanReport existingScanReport = scanReportRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Scan report not found with id: " + id));
 
@@ -125,7 +126,7 @@ public class ScanReportServiceImpl implements ScanReportService {
     }
 
     @Override
-    public void deleteScanReport(Long id) {
+    public void deleteScanReport(UUID id) {
         if (!scanReportRepository.existsById(id)) {
             throw new EntityNotFoundException("Scan report not found with id: " + id);
         }

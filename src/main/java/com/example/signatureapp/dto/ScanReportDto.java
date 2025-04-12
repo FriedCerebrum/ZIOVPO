@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -31,5 +32,5 @@ public class ScanReportDto {
     @NotNull(message = "Scan engine must be specified")
     private Long scanEngineId;
     
-    private Long detectedSignatureId;
+    private UUID detectedSignatureId;
 }
