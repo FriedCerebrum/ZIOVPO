@@ -55,8 +55,8 @@ public class SignatureHistory {
     private Integer startOffset;
     
     // Смещение конца сигнатуры (копия поля)
-    @Column(name = "end_offset", nullable = false)
-    private Integer endOffset;
+    @Column(name = "offset_end", nullable = false)
+    private Long endOffset;
     
     // Копия ЭЦП
     @Column(name = "digital_signature", nullable = false, columnDefinition = "TEXT")

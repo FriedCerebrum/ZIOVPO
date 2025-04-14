@@ -110,9 +110,9 @@ public class SignatureServiceImpl implements SignatureService {
 
     @Override
     public List<SignatureDto> findByOffsetRange(Integer startOffset, Integer endOffset) {
-        return signatureRepository.findByStartOffsetBetween(startOffset, endOffset).stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
+        log.info("Поиск сигнатур в диапазоне офсетов: {} - {}", startOffset, endOffset);
+        List<Signature> signatures = signatureRepository.findByStartOffsetBetween(startOffset, endOffset);
+        return signatures.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -141,6 +141,7 @@ public class SignatureServiceImpl implements SignatureService {
         existingSignature.setEndOffset(signatureDto.getEndOffset());
         existingSignature.setFileType(fileType);
         existingSignature.setUpdatedAt(LocalDateTime.now());
+        existingSignature.setObjectName(signatureDto.getObjectName());
         
         // Формируем новую цифровую подпись
         String signatureContent = existingSignature.getThreatName() + existingSignature.getFirst8Bytes() + existingSignature.getRemainderHash();
@@ -289,6 +290,7 @@ public class SignatureServiceImpl implements SignatureService {
                 .digitalSignature(signatureDto.getDigitalSignature())
                 .createdAt(signatureDto.getCreatedAt())
                 .updatedAt(signatureDto.getUpdatedAt())
+                .objectName(signatureDto.getObjectName())
                 .build();
     }
 
@@ -307,6 +309,7 @@ public class SignatureServiceImpl implements SignatureService {
                 .digitalSignature(signature.getDigitalSignature())
                 .createdAt(signature.getCreatedAt())
                 .updatedAt(signature.getUpdatedAt())
+                .objectName(signature.getObjectName())
                 .build();
     }
 }

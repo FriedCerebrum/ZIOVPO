@@ -43,12 +43,12 @@ public class Signature {
     private FileType fileType;
     
     // Смещение начала сигнатуры в файле
-    @Column(name = "offset_start", nullable = false)
+    @Column(name = "start_offset", nullable = false)
     private Integer startOffset;
     
     // Смещение конца сигнатуры в файле
     @Column(name = "offset_end", nullable = false)
-    private Integer endOffset;
+    private Long endOffset;
     
     // Электронная цифровая подпись
     @Column(name = "digital_signature", nullable = false, columnDefinition = "TEXT")
@@ -65,6 +65,10 @@ public class Signature {
     // Статус записи (ACTUAL, DELETED, CORRUPTED)
     @Column(name = "status", nullable = false)
     private String status;
+    
+    // Имя объекта
+    @Column(name = "object_name", nullable = false)
+    private String objectName;
     
     // OneToOne relationship with ScanReport
     @OneToOne(mappedBy = "detectedSignature")

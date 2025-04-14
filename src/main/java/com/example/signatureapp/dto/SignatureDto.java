@@ -33,7 +33,7 @@ public class SignatureDto {
     private Integer startOffset;
     
     @NotNull(message = "End offset must be specified")
-    private Integer endOffset;
+    private Long endOffset;
     
     @NotNull(message = "File type must be specified")
     private Long fileTypeId;
@@ -45,4 +45,7 @@ public class SignatureDto {
     private LocalDateTime updatedAt;
     
     private String status;
+    
+    @NotBlank(message = "Object name cannot be blank")
+    private String objectName;
 }

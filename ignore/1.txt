@@ -1,0 +1,177 @@
+1. Создание нового типа файла (POST)
+POST http://localhost:8063/api/file-types
+Content-Type: application/json
+
+{
+  "name": "PE File",
+  "description": "Portable Executable файл для Windows",
+  "extension": ".exe",
+  "mimeType": "application/x-msdownload",
+  "isBinary": true
+}
+
+2. Получение всех типов файлов (GET) ( Может получить только админ)
+GET http://localhost:8063/api/file-types
+
+3. Создание движка сканирования (POST)
+POST http://localhost:8063/api/scan-engines
+Content-Type: application/json
+
+{
+  "name": "AntiMalware Scanner",
+  "description": "Сканер вредоносного ПО",
+  "version": "1.0.0",
+  "isActive": true
+}
+4. Создание сигнатуры (POST) (Только под админом)
+
+
+POST http://localhost:8063/api/signatures
+Content-Type: application/json
+
+{
+  "threatName": "Trojan.Win32.TestMalware",
+  "first8Bytes": "4D5A90000300000004",
+  "remainderHash": "a1b2c3d4e5f6g7h8i9j0",
+  "remainderLength": 1024,
+  "fileTypeId": 1,
+  "startOffset": 0,
+  "endOffset": 1024
+}
+
+
+
+5. Получение списка сигнатур (GET) ( Могут получить все)
+GET http://localhost:8063/api/signatures
+
+6. Создание отчета о сканировании (POST)
+
+POST http://localhost:8063/api/scan-reports
+Content-Type: application/json
+
+{
+  "fileName": "test_file.exe",
+  "fileSize": 45056,
+  "status": "INFECTED",
+  "resultDetails": "Найден вредоносный код Trojan.Win32.TestMalware",
+  "scanEngineId": 1,
+  "detectedSignatureId": "UUID_СИГНАТУРЫ"
+}
+
+7. Получение отчетов о сканировании (GET) ( Может получить лишь админ)
+GET http://localhost:8063/api/scan-reports
+
+8. Обновление сигнатуры (PUT)
+PUT http://localhost:8063/api/signatures/{uuid}
+Content-Type: application/json
+
+{
+  "threatName": "Trojan.Win32.TestMalware.Updated",
+  "first8Bytes": "4D5A90000300000004",
+  "remainderHash": "a1b2c3d4e5f6g7h8i9j0",
+  "remainderLength": 1024,
+  "fileTypeId": 1,
+  "startOffset": 0,
+  "endOffset": 1024
+}
+9. Удаление сигнатуры (DELETE)
+
+DELETE http://localhost:8063/api/signatures/{uuid}
+
+                                                       ЛАБА 2:
+
+1. Получение всех актуальных сигнатур ( Могут получить все)
+
+GET http://localhost:8063/api/signatures
+Этот запрос вернет все актуальные сигнатуры (со статусом ACTUAL).
+
+2. Добавление новой сигнатуры (только для администратора)
+
+POST http://localhost:8063/api/signatures
+Content-Type: application/json
+User-Id : admin-user
+X-User-Role: ADMIN
+
+{
+  "threatName": "Trojan.Win32.Example",
+  "first8Bytes": "4D5A90000300000004",
+  "remainderHash": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+  "remainderLength": 1024,
+  "fileTypeId": 1,
+  "startOffset": 0,
+  "endOffset": 1024
+}
+Этот запрос создаст новую сигнатуру с автоматическим формированием ЭЦП.
+
+3. Получение обновленных сигнатур (дифф) (Могут получить все)
+
+GET http://localhost:8063/api/signatures/updated-since?since=2025-04-10T00:00:00
+X-User-Id: regular-user
+Вернет сигнатуры, обновленные после указанной даты (включая удаленные и поврежденные).
+
+4. Получение сигнатур по списку GUID
+
+POST http://localhost:8063/api/signatures/by-ids
+Content-Type: application/json
+X-User-Id: regular-user
+
+{
+  "ids": [
+    "550e8400-e29b-41d4-a716-446655440000",
+    "550e8400-e29b-41d4-a716-446655440001"
+  ]
+}
+Вернет список сигнатур с указанными идентификаторами.
+
+5. Обновление сигнатуры (только для администратора)
+
+PUT http://localhost:8063/api/signatures/550e8400-e29b-41d4-a716-446655440000
+Content-Type: application/json
+X-User-Id: admin-user
+X-User-Role: ADMIN
+
+{
+  "threatName": "Trojan.Win32.UpdatedExample",
+  "first8Bytes": "4D5A90000300000004",
+  "remainderHash": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+  "remainderLength": 1024,
+  "fileTypeId": 1,
+  "startOffset": 0,
+  "endOffset": 1024
+}
+Этот запрос обновит сигнатуру, сохранит предыдущую версию в истории и создаст запись аудита.
+
+6. Удаление сигнатуры (только для администратора)
+
+DELETE http://localhost:8063/api/signatures/550e8400-e29b-41d4-a716-446655440000
+X-User-Id: admin-user
+X-User-Role: ADMIN
+Этот запрос не удалит сигнатуру физически, а изменит ее статус на DELETED.
+
+7. Получение истории изменений сигнатуры
+
+GET http://localhost:8063/api/signatures/550e8400-e29b-41d4-a716-446655440000/history
+X-User-Id: admin-user
+X-User-Role: ADMIN
+Вернет историю всех версий сигнатуры.
+
+8. Получение аудита изменений сигнатуры
+
+GET http://localhost:8063/api/signatures/550e8400-e29b-41d4-a716-446655440000/audit
+X-User-Id: admin-user
+X-User-Role: ADMIN
+Вернет аудит всех действий, произведенных с сигнатурой.
+
+9. Просмотр сигнатур по статусу (для администратора)
+
+GET http://localhost:8063/api/signatures/by-status?status=CORRUPTED
+X-User-Id: admin-user
+X-User-Role: ADMIN
+Вернет сигнатуры с указанным статусом. Можно использовать ACTUAL, DELETED или CORRUPTED.
+
+10. Проверка ЭЦП для сигнатуры (для администратора)
+
+GET http://localhost:8063/api/signatures/550e8400-e29b-41d4-a716-446655440000/verify
+X-User-Id: admin-user
+X-User-Role: ADMIN
+Проверит целостность ЭЦП для указанной сигнатуры.
