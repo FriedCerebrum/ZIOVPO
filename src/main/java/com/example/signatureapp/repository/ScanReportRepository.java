@@ -7,10 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Repository
-public interface ScanReportRepository extends JpaRepository<ScanReport, UUID> {
+public interface ScanReportRepository extends JpaRepository<ScanReport, Long> {  // Заменяем UUID на Long
     List<ScanReport> findByScanEngine(ScanEngine scanEngine);
     List<ScanReport> findByStatus(String status);
     List<ScanReport> findByFileName(String fileName);

@@ -35,9 +35,11 @@ public class ScanEngine {
 
     // ManyToMany with FileType
     @ManyToMany(mappedBy = "compatibleScanEngines")
+    @Builder.Default  // Добавляем эту аннотацию
     private Set<FileType> supportedFileTypes = new HashSet<>();
 
     // OneToMany with ScanReport
     @OneToMany(mappedBy = "scanEngine", cascade = CascadeType.ALL)
+    @Builder.Default  // Добавляем эту аннотацию
     private Set<ScanReport> scanReports = new HashSet<>();
 }

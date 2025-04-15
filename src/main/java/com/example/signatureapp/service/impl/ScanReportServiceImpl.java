@@ -11,10 +11,10 @@ import com.example.signatureapp.service.ScanReportService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,7 +51,7 @@ public class ScanReportServiceImpl implements ScanReportService {
     }
 
     @Override
-    public ScanReportDto getScanReportById(UUID id) {
+    public ScanReportDto getScanReportById(Long id) {  // Заменяем UUID на Long
         ScanReport scanReport = scanReportRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Scan report not found with id: " + id));
         return mapToDto(scanReport);
@@ -96,7 +96,8 @@ public class ScanReportServiceImpl implements ScanReportService {
     }
 
     @Override
-    public ScanReportDto updateScanReport(UUID id, ScanReportDto scanReportDto) {
+    @Transactional
+    public ScanReportDto updateScanReport(Long id, ScanReportDto scanReportDto) {
         ScanReport existingScanReport = scanReportRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Scan report not found with id: " + id));
 
@@ -126,7 +127,7 @@ public class ScanReportServiceImpl implements ScanReportService {
     }
 
     @Override
-    public void deleteScanReport(UUID id) {
+    public void deleteScanReport(Long id) { // Меняем UUID на Long
         if (!scanReportRepository.existsById(id)) {
             throw new EntityNotFoundException("Scan report not found with id: " + id);
         }

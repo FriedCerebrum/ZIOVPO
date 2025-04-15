@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface SignatureHistoryRepository extends JpaRepository<SignatureHistory, UUID> {
+public interface SignatureHistoryRepository extends JpaRepository<SignatureHistory, Long> {  // Заменяем UUID на Long
     // Поиск истории изменений для конкретной сигнатуры
     List<SignatureHistory> findBySignatureIdOrderByVersionCreatedAtDesc(UUID signatureId);
 }

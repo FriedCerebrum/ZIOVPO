@@ -31,4 +31,6 @@ C:\ZIOVPO\src\main\java\com\example\signatureapp\model\SignatureAudit.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\security\UserRoleAuthenticationFilter.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\dto\ScanReportDto.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\model\SignatureHistory.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\constants\SignatureConstants.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\repository\SignatureRepository.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\exception\GlobalExceptionHandler.java

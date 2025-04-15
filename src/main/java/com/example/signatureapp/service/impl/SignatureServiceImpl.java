@@ -12,8 +12,11 @@ import com.example.signatureapp.repository.SignatureRepository;
 import com.example.signatureapp.service.DigitalSignatureService;
 import com.example.signatureapp.service.SignatureService;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.example.signatureapp.constants.SignatureConstants;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class SignatureServiceImpl implements SignatureService {
 
     private final SignatureRepository signatureRepository;
@@ -44,6 +48,7 @@ public class SignatureServiceImpl implements SignatureService {
     }
 
     @Override
+    @Transactional
     public SignatureDto createSignature(SignatureDto signatureDto, String userId) {
         // Находим тип файла
         FileType fileType = fileTypeRepository.findById(signatureDto.getFileTypeId())
@@ -54,7 +59,7 @@ public class SignatureServiceImpl implements SignatureService {
         signature.setId(UUID.randomUUID()); // Генерируем UUID
         signature.setCreatedAt(LocalDateTime.now());
         signature.setUpdatedAt(LocalDateTime.now());
-        signature.setStatus("ACTUAL");
+        signature.setStatus(SignatureConstants.STATUS_ACTUAL);
         
         // Формируем цифровую подпись
         String signatureContent = signature.getThreatName() + signature.getFirst8Bytes() + signature.getRemainderHash();
@@ -79,7 +84,7 @@ public class SignatureServiceImpl implements SignatureService {
 
     @Override
     public List<SignatureDto> getAllActualSignatures() {
-        return signatureRepository.findByStatus("ACTUAL").stream()
+        return signatureRepository.findByStatus(SignatureConstants.STATUS_ACTUAL).stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
@@ -116,12 +121,13 @@ public class SignatureServiceImpl implements SignatureService {
     }
 
     @Override
+    @Transactional
     public SignatureDto updateSignature(UUID id, SignatureDto signatureDto, String userId) {
         Signature existingSignature = signatureRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Signature not found with id: " + id));
 
         // Проверяем, что сигнатура актуальна
-        if (!"ACTUAL".equals(existingSignature.getStatus())) {
+        if (!SignatureConstants.STATUS_ACTUAL.equals(existingSignature.getStatus())) {
             throw new IllegalStateException("Cannot update signature with status: " + existingSignature.getStatus());
         }
 
@@ -158,18 +164,20 @@ public class SignatureServiceImpl implements SignatureService {
     }
 
     @Override
+    @Transactional
     public void deleteSignature(UUID id, String userId) {
-        Signature signature = signatureRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Signature not found with id: " + id));
-        
-        // Меняем статус на DELETED вместо физического удаления
-        signature.setStatus("DELETED");
-        signature.setUpdatedAt(LocalDateTime.now());
-        signatureRepository.save(signature);
-        
-        // Добавляем запись в аудит
-        createAuditRecord(id, userId, "DELETE", "Удалена сигнатура");
-    }
+     Signature signature = signatureRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Signature not found with id: " + id));
+    
+    // Сохраняем историю перед изменением статуса
+    saveSignatureHistory(signature);
+    
+    signature.setStatus(SignatureConstants.STATUS_DELETED);
+    signature.setUpdatedAt(LocalDateTime.now());
+    signatureRepository.save(signature);
+    
+    createAuditRecord(id, userId, "DELETE", "Удалена сигнатура");
+}
 
     @Override
     public List<SignatureDto> getSignaturesUpdatedSince(LocalDateTime since) {
@@ -197,24 +205,27 @@ public class SignatureServiceImpl implements SignatureService {
 
     @Override
     public boolean verifySignatureDigitalSignature(UUID signatureId) {
-        Signature signature = signatureRepository.findById(signatureId)
-                .orElseThrow(() -> new EntityNotFoundException("Signature not found with id: " + signatureId));
+    Signature signature = signatureRepository.findById(signatureId)
+            .orElseThrow(() -> new EntityNotFoundException("Signature not found with id: " + signatureId));
+    
+    // Проверяем цифровую подпись
+    String signatureContent = signature.getThreatName() + signature.getFirst8Bytes() + signature.getRemainderHash();
+    boolean isValid = digitalSignatureService.verifySignature(signatureContent, signature.getDigitalSignature());
+    
+    if (!isValid && SignatureConstants.STATUS_ACTUAL.equals(signature.getStatus())) {
+        // Сохраняем историю перед изменением статуса
+        saveSignatureHistory(signature);
         
-        // Проверяем цифровую подпись
-        String signatureContent = signature.getThreatName() + signature.getFirst8Bytes() + signature.getRemainderHash();
-        boolean isValid = digitalSignatureService.verifySignature(signatureContent, signature.getDigitalSignature());
-        
-        // Если подпись некорректна, обновляем статус
-        if (!isValid && "ACTUAL".equals(signature.getStatus())) {
-            signature.setStatus("CORRUPTED");
-            signatureRepository.save(signature);
-            createAuditRecord(signatureId, "SYSTEM", "VERIFY", "Обнаружена некорректная цифровая подпись");
-        }
-        
-        return isValid;
+        signature.setStatus(SignatureConstants.STATUS_CORRUPTED);
+        signatureRepository.save(signature);
+        createAuditRecord(signatureId, "SYSTEM", "VERIFY", "Обнаружена некорректная цифровая подпись");
+    }
+    return isValid;
     }
 
+
     @Override
+    @Transactional
     public int verifyAllSignaturesUpdatedSince(LocalDateTime since) {
         List<Signature> signatures = signatureRepository.findByUpdatedAtAfter(since);
         int count = 0;
@@ -223,8 +234,11 @@ public class SignatureServiceImpl implements SignatureService {
             String signatureContent = signature.getThreatName() + signature.getFirst8Bytes() + signature.getRemainderHash();
             boolean isValid = digitalSignatureService.verifySignature(signatureContent, signature.getDigitalSignature());
             
-            if (!isValid && "ACTUAL".equals(signature.getStatus())) {
-                signature.setStatus("CORRUPTED");
+            if (!isValid && SignatureConstants.STATUS_ACTUAL.equals(signature.getStatus())) {
+                // Сохраняем историю перед изменением статуса
+                saveSignatureHistory(signature);
+                
+                signature.setStatus(SignatureConstants.STATUS_CORRUPTED);
                 signatureRepository.save(signature);
                 createAuditRecord(signature.getId(), "SYSTEM", "VERIFY", "Обнаружена некорректная цифровая подпись при массовой проверке");
             }
@@ -234,6 +248,7 @@ public class SignatureServiceImpl implements SignatureService {
         
         return count;
     }
+
 
     @Override
     public List<SignatureDto> getSignaturesByStatus(String status) {

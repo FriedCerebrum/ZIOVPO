@@ -38,6 +38,7 @@ public class FileType {
 
     // OneToMany relationship with Signature
     @OneToMany(mappedBy = "fileType", cascade = CascadeType.ALL)
+    @Builder.Default  // Добавляем эту аннотацию
     private Set<Signature> signatures = new HashSet<>();
 
     // ManyToMany relationship with ScanEngine
@@ -47,5 +48,6 @@ public class FileType {
         joinColumns = @JoinColumn(name = "filetype_id"),
         inverseJoinColumns = @JoinColumn(name = "scanengine_id")
     )
+    @Builder.Default  // Добавляем эту аннотацию
     private Set<ScanEngine> compatibleScanEngines = new HashSet<>();
 }

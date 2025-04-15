@@ -4,6 +4,7 @@ import com.example.signatureapp.dto.SignatureDto;
 import com.example.signatureapp.model.SignatureAudit;
 import com.example.signatureapp.model.SignatureHistory;
 import com.example.signatureapp.service.SignatureService;
+// import com.example.signatureapp.constants.SignatureConstants;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,9 +24,10 @@ public class SignatureController {
     private final SignatureService signatureService;
     
     // u041au043eu043du0441u0442u0430u043du0442u044b u0434u043bu044f u0441u0442u0430u0442u0443u0441u043eu0432 u0441u0438u0433u043du0430u0442u0443u0440
-    private static final String STATUS_ACTUAL = "ACTUAL";
-    private static final String STATUS_DELETED = "DELETED";
-    private static final String STATUS_CORRUPTED = "CORRUPTED";
+    //private static final String STATUS_ACTUAL = "ACTUAL";
+    //private static final String STATUS_DELETED = "DELETED";
+    //private static final String STATUS_CORRUPTED = "CORRUPTED";
+    // Поля не используются. Вместо них константы из constants.SignatureConstants, но и они не применяются.
 
     @Autowired
     public SignatureController(SignatureService signatureService) {

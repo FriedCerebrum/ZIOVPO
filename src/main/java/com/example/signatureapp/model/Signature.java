@@ -73,4 +73,16 @@ public class Signature {
     // OneToOne relationship with ScanReport
     @OneToOne(mappedBy = "detectedSignature")
     private ScanReport scanReport;
+
+    @Version
+    private Long version;
+    
+    // Геттеры и сеттеры...
+    public Long getVersion() {
+        return version;
+    }
+    
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 }
