@@ -1,0 +1,1 @@
+& 'C:\Program Files\PostgreSQL\15\bin\pg_dump.exe' -U postgres -h localhost -d signature_db --schema-only > db_structure.sql
