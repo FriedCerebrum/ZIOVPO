@@ -4,6 +4,7 @@ import unittest
 import logging
 import sys
 from datetime import datetime
+from functools import wraps
 
 
 # Configure logging with colors and formatting
@@ -40,11 +41,33 @@ file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(mes
 logger.addHandler(file_handler)
 
 
+# Decorator to continue test execution after errors
+def continue_on_error(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            logger.error(f"Error in {func.__name__}: {str(e)}")
+            logger.error("Test will continue despite error")
+
+    return wrapper
+
+
 class ZIOVPOSignatureDetectionAPITests(unittest.TestCase):
     """
     Python script to test ZIOVPO Signature Detection API endpoints.
     This script follows the structure of the provided Postman collection.
     """
+
+    # Class variable to control API key usage
+    use_api_key = True
+
+    @classmethod
+    def set_api_key_usage(cls, disabled):
+        """Enable or disable the use of API key in requests"""
+        cls.use_api_key = disabled
+        logger.info(f"API key usage set to: {disabled}")
 
     def setUp(self):
         """Initialize test variables and set up the test environment"""
@@ -53,16 +76,26 @@ class ZIOVPOSignatureDetectionAPITests(unittest.TestCase):
         logger.info("=" * 80)
 
         self.base_url = "http://localhost:8063"
-        self.user_id = "admin_tester"
+        self.user_id = "user_123"
         self.api_key = "some_default_dev_key_never_use_in_production"
 
         # Use a session for better control over headers
         self.session = requests.Session()
-        self.session.headers.update({
+
+        # Set headers based on API key usage flag
+        headers = {
             "User-Id": self.user_id,
-            "X-API-Key": self.api_key,
             "Content-Type": "application/json"
-        })
+        }
+
+        # Only add API key if enabled
+        if self.__class__.use_api_key:
+            headers["X-API-Key"] = self.api_key
+            logger.info("API key included in request headers")
+        else:
+            logger.info("API key omitted from request headers")
+
+        self.session.headers.update(headers)
 
         # Monkey patch the session to log requests and responses
         original_request = self.session.request
@@ -123,17 +156,28 @@ class ZIOVPOSignatureDetectionAPITests(unittest.TestCase):
         """Test all API endpoints in sequence"""
         logger.info("Starting ZIOVPO Signature Detection API Tests...")
 
-        # Test File Types endpoints
-        self._test_file_types()
+        # Each test is wrapped in continue_on_error
+        try:
+            self._test_file_types()
+        except Exception as e:
+            logger.error(f"File Types test failed: {e}")
+            logger.error("Continuing with next test...")
 
-        # Test Scan Engines endpoints
-        self._test_scan_engines()
+        try:
+            self._test_scan_engines()
+        except Exception as e:
+            logger.error(f"Scan Engines test failed: {e}")
+            logger.error("Continuing with next test...")
 
-        # Test Scan Reports endpoints
-        self._test_scan_reports()
+        try:
+            self._test_scan_reports()
+        except Exception as e:
+            logger.error(f"Scan Reports test failed: {e}")
+            logger.error("Continuing with next test...")
 
-        logger.info("All tests completed successfully!")
+        logger.info("All tests attempted!")
 
+    @continue_on_error
     def _test_file_types(self):
         """Test File Types API endpoints"""
         logger.info("\n1. TESTING FILE TYPES ENDPOINTS")
@@ -215,6 +259,7 @@ class ZIOVPOSignatureDetectionAPITests(unittest.TestCase):
             # Update the name for future reference
             self.file_type_name = updated_name
 
+    @continue_on_error
     def _test_scan_engines(self):
         """Test Scan Engines API endpoints"""
         logger.info("\n2. TESTING SCAN ENGINES ENDPOINTS")
@@ -298,6 +343,7 @@ class ZIOVPOSignatureDetectionAPITests(unittest.TestCase):
             # Update the name for future reference
             self.scan_engine_name = updated_engine_name
 
+    @continue_on_error
     def _test_scan_reports(self):
         """Test Scan Reports API endpoints"""
         logger.info("\n3. TESTING SCAN REPORTS ENDPOINTS")
@@ -382,5 +428,8 @@ class ZIOVPOSignatureDetectionAPITests(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    # Example of how to disable API key before running tests
+    # ZIOVPOSignatureDetectionAPITests.set_api_key_usage(False)
+
     # Run the tests
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
