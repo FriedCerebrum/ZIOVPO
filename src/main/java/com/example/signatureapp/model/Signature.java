@@ -38,7 +38,7 @@ public class Signature {
     private Integer remainderLength;
     
     // Тип файла, для которого актуальна сигнатура
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "file_type_id", nullable = false)
     private FileType fileType;
     
@@ -71,7 +71,7 @@ public class Signature {
     private String objectName;
     
     // OneToOne relationship with ScanReport
-    @OneToOne(mappedBy = "detectedSignature")
+    @OneToOne(mappedBy = "detectedSignature", fetch = FetchType.LAZY)
     private ScanReport scanReport;
 
     @Version

@@ -1,0 +1,9 @@
+# Читаем файл EICAR
+$bytes = [System.IO.File]::ReadAllBytes("C:\ZIOVPO\eicar.com")
+# Берём все байты, начиная с 9-го (индекс 8)
+$rem = $bytes[8..($bytes.Length-1)]
+# Считаем SHA-256
+$hashObj = [System.Security.Cryptography.SHA256]::Create()
+$hashBytes = $hashObj.ComputeHash($rem)
+$hash = [BitConverter]::ToString($hashBytes).Replace("-","").ToLower()
+Write-Host "remainder_hash = $hash"

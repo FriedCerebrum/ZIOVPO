@@ -15,6 +15,7 @@ com\example\signatureapp\model\SignatureHistory.class
 com\example\signatureapp\controller\ScanEngineController.class
 com\example\signatureapp\dto\FileTypeDto.class
 com\example\signatureapp\dto\SignatureDto$SignatureDtoBuilder.class
+com\example\signatureapp\service\FileScanService.class
 com\example\signatureapp\service\DigitalSignatureService.class
 com\example\signatureapp\config\SecurityConfig.class
 com\example\signatureapp\exception\GlobalExceptionHandler$ErrorResponse.class
@@ -25,8 +26,10 @@ com\example\signatureapp\SignatureAppApplication.class
 com\example\signatureapp\model\SignatureAudit.class
 com\example\signatureapp\model\SignatureHistory$SignatureHistoryBuilder.class
 com\example\signatureapp\scheduler\SignatureVerificationScheduler.class
+com\example\signatureapp\controller\FileScanController.class
 com\example\signatureapp\service\ScanEngineService.class
 com\example\signatureapp\dto\ScanReportDto.class
+com\example\signatureapp\dto\SignatureScanResultDto.class
 com\example\signatureapp\service\ScanReportService.class
 com\example\signatureapp\controller\ScanReportController.class
 com\example\signatureapp\repository\SignatureHistoryRepository.class
@@ -46,3 +49,4 @@ com\example\signatureapp\service\impl\DigitalSignatureServiceImpl.class
 com\example\signatureapp\model\ScanEngine.class
 com\example\signatureapp\model\Signature$SignatureBuilder.class
 com\example\signatureapp\repository\SignatureRepository.class
+com\example\signatureapp\service\impl\FileScanServiceImpl.class

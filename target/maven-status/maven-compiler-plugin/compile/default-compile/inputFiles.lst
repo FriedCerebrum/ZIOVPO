@@ -8,13 +8,16 @@ C:\ZIOVPO\src\main\java\com\example\signatureapp\scheduler\SignatureVerification
 C:\ZIOVPO\src\main\java\com\example\signatureapp\SignatureAppApplication.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\impl\SignatureServiceImpl.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\config\SecurityConfig.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\dto\SignatureScanResultDto.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\FileTypeService.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\impl\FileTypeServiceImpl.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\SignatureService.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\dto\ScanEngineDto.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\model\Signature.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\dto\SignatureDto.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\service\FileScanService.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\impl\ScanReportServiceImpl.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\controller\FileScanController.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\model\ScanReport.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\model\FileType.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\controller\ScanReportController.java
@@ -29,6 +32,7 @@ C:\ZIOVPO\src\main\java\com\example\signatureapp\model\ScanEngine.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\service\DigitalSignatureService.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\model\SignatureAudit.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\security\UserRoleAuthenticationFilter.java
+C:\ZIOVPO\src\main\java\com\example\signatureapp\service\impl\FileScanServiceImpl.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\dto\ScanReportDto.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\model\SignatureHistory.java
 C:\ZIOVPO\src\main\java\com\example\signatureapp\constants\SignatureConstants.java
